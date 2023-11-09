@@ -45,13 +45,15 @@ console.log(mongoose.connection.readyState);
 
 app.post('/api/newBugReport', async (req,res) =>{
   try {
+    console.log(req.body);
     const newBugReport = {
-      title: req.body['title'],
-      tags: req.body['tags'],
-      priority: req.body['priority'],
+      title: "New Bug Report",
+      tags: ["tag1", "tag2"],
+      priority: "high",
+      addedBy: "Adam",
     }
     await BugReport.create(newBugReport);
-    res.status(200).send('Bug report filed successfully!');
+    res.status(200).send(req.body);
   } catch (err) {
     console.error(err);
     res.status(500).send('Error occurred: database error. FILE BUGREPORT FAILED');
