@@ -24,33 +24,22 @@ app.use(express.static(path.join(__dirname)));
 
 console.log(mongoose.connection.readyState);
 
-
-
-// app.get('/', async (req,res) =>{
-//   console.log("I was called");
-//   try {
-//     const newUser = {
-//       name: "Adam",
-//       username: "adam",
-//       lists: [],
-//     }
-//     console.log(req.query);;
-//     newUser.password = req.query['pwd'];
-//     await User.create(newUser);
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).send('Error occurred: database error. ADD USER FAILED');
-//   }
-// });
-
 app.post('/api/newBugReport', async (req,res) =>{
   try {
-    console.log(req.body);
+    const formData = req.body;
+    console.log(formData);
+
+    // const newBugReport = {
+    //   title: "New Bug Report",
+    //   tags: ["tag1", "tag2"],
+    //   priority: "high",
+    //   addedBy: "Adam",
+    // }
     const newBugReport = {
-      title: "New Bug Report",
-      tags: ["tag1", "tag2"],
-      priority: "high",
-      addedBy: "Adam",
+      title: formData.title,
+      tags: formData.tags,
+      priority: formData.priority,
+      addedBy: "Adam Sharif"
     }
     await BugReport.create(newBugReport);
     res.status(200).send(req.body);
