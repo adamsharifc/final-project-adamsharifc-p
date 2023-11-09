@@ -17,28 +17,46 @@ app.use(express.urlencoded({ extended: false }));
 // DB setup
 import mongoose from 'mongoose';
 const User = mongoose.model('User');
+const BugReport = mongoose.model('BugReport');
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname)));
 
 console.log(mongoose.connection.readyState);
 
-app.get('/', async (req,res) =>{
-  console.log("I was called");
+
+
+// app.get('/', async (req,res) =>{
+//   console.log("I was called");
+//   try {
+//     const newUser = {
+//       name: "Adam",
+//       username: "adam",
+//       lists: [],
+//     }
+//     console.log(req.query);;
+//     newUser.password = req.query['pwd'];
+//     await User.create(newUser);
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).send('Error occurred: database error. ADD USER FAILED');
+//   }
+// });
+
+app.post('/api/newBugReport', async (req,res) =>{
   try {
-    const newUser = {
-      name: "Adam",
-      username: "adam",
-      lists: [],
+    const newBugReport = {
+      title: req.body['title'],
+      tags: req.body['tags'],
+      priority: req.body['priority'],
     }
-    console.log(req.query);;
-    newUser.password = req.query['pwd'];
-    await User.create(newUser);
-    res.send("User added");
+    await BugReport.create(newBugReport);
+    res.status(200).send('Bug report filed successfully!');
   } catch (err) {
     console.error(err);
-    res.status(500).send('Error occurred: database error. ADD USER FAILED');
+    res.status(500).send('Error occurred: database error. FILE BUGREPORT FAILED');
   }
-})
+});
+
 
 // app.get('/', (req, res) => {
 //   console.log("I was called");
