@@ -6,6 +6,7 @@ import bodyParser from 'body-parser';
 
 const app = express();
 app.use(cors());
+app.use(bodyParser.json());
 // set up express static
 import url from 'url';
 import path from 'path';
@@ -26,7 +27,7 @@ console.log(mongoose.connection.readyState);
 
 app.post('/api/newBugReport', async (req,res) =>{
   try {
-    const formData = JSON.stringify(req.body);
+    const formData = req.body;
     console.log(formData);
 
     // const newBugReport = {
@@ -39,7 +40,7 @@ app.post('/api/newBugReport', async (req,res) =>{
       title: formData.title,
       tags: formData.tags,
       priority: formData.priority,
-      addedBy: formData
+      addedBy: "Adam"
     }
     await BugReport.create(newBugReport);
     res.status(200).json(formData);
