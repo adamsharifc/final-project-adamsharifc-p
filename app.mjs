@@ -1,10 +1,11 @@
-import express from 'express'
+import express from 'express';
+import cors from 'cors';
 import './config.mjs';
 import './db.mjs';
 import bodyParser from 'body-parser';
 
 const app = express();
-
+app.use(cors());
 // set up express static
 import url from 'url';
 import path from 'path';
