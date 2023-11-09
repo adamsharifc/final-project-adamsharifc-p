@@ -26,7 +26,7 @@ console.log(mongoose.connection.readyState);
 
 app.post('/api/newBugReport', async (req,res) =>{
   try {
-    const formData = JSON.stringify(req.body);
+    const formData = JSON.stringify(req);
     console.log(formData);
 
     // const newBugReport = {
