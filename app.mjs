@@ -26,7 +26,7 @@ console.log(mongoose.connection.readyState);
 
 app.post('/api/newBugReport', async (req,res) =>{
   try {
-    const formData = req.body;
+    const formData = JSON.stringify(req.body);
     console.log(formData);
 
     // const newBugReport = {
@@ -36,13 +36,13 @@ app.post('/api/newBugReport', async (req,res) =>{
     //   addedBy: "Adam",
     // }
     const newBugReport = {
-      title: formData.title,
-      tags: formData.tags,
-      priority: formData.priority,
-      addedBy: "Adam Sharif"
+      // title: formData.title,
+      // tags: formData.tags,
+      // priority: formData.priority,
+      addedBy: formData
     }
     await BugReport.create(newBugReport);
-    res.status(200).send(req.body);
+    res.status(200).json(newBugReport);
   } catch (err) {
     console.error(err);
     res.status(500).send('Error occurred: database error. FILE BUGREPORT FAILED');
