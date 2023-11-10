@@ -16,6 +16,7 @@ const BugReport = new mongoose.Schema({
     tags: [String],
     comments: [Number],
     resolution: Number,
+    description: String,
 });
 
 mongoose.model('BugReport', BugReport);

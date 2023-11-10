@@ -34,6 +34,7 @@ app.post('/api/newBugReport', async (req,res) =>{
       title: formData.title,
       tags: formData.tags,
       priority: formData.priority,
+      desscription: formData.description,
       addedBy: "Adam"
     }
     await BugReport.create(newBugReport);
