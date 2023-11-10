@@ -30,12 +30,6 @@ app.post('/api/newBugReport', async (req,res) =>{
     const formData = req.body;
     console.log(formData);
 
-    // const newBugReport = {
-    //   title: "New Bug Report",
-    //   tags: ["tag1", "tag2"],
-    //   priority: "high",
-    //   addedBy: "Adam",
-    // }
     const newBugReport = {
       title: formData.title,
       tags: formData.tags,
@@ -47,6 +41,16 @@ app.post('/api/newBugReport', async (req,res) =>{
   } catch (err) {
     console.error(err);
     res.status(500).send('Error occurred: database error. FILE BUGREPORT FAILED');
+  }
+});
+
+app.get('/api/getBugReports', async (req,res) =>{
+  try {
+    const bugReports = await BugReport.find({});
+    res.status(200).json(bugReports);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error occurred: database error. GET BUGREPORTS FAILED');
   }
 });
 
