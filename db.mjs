@@ -22,7 +22,7 @@ const BugReport = new mongoose.Schema({
 mongoose.model('BugReport', BugReport);
 
 const User = new mongoose.Schema({
-    name: String,
+    email: String,
     username: String,
     password: String,
     lists: [Number],
@@ -40,14 +40,16 @@ const Comment = new mongoose.Schema({
 
 mongoose.model('Comment', Comment);
 
-const Resolution = new mongoose.Schema({
+const Solution = new mongoose.Schema({
     id: Number,
     bugId: Number,
     resolvedBy: String,
     resolutionDetail: String,
+    status: String,
+    verifiedBy: String,
     timestamp: { type: Date, default: Date.now },
 });
 
-mongoose.model('Resolution', Resolution);
+mongoose.model('Solution', Solution);
 
 export default dbConnection;

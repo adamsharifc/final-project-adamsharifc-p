@@ -1,18 +1,22 @@
 {
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "eslint": "^8.52.0",
     "express": "^4.18.2",
+    "express-session": "^1.17.3",
     "mocha": "^10.2.0",
-    "mongoose": "^8.0.0"
+    "mongoose": "^8.0.0",
+    "passport": "^0.6.0",
+    "passport-local": "^1.0.0"
   },
   "name": "squashem",
   "description": "**Squashem** is a web application that allows programmers to log in and create a list of bugs that they need to fix. They can then add bugs to the list, and cross them off as they fix them. Squashem allows programmers to create concise bug reports essential to the debugging process. Main features include:\r   - Bug Reporting\r   - Bug Assignment\r   - Bug Categorization\r   - Bug Prioritization\r   - Comments\r   - Search and Filters\r   - Potential Dependencies",
   "version": "1.0.0",
   "main": "index.js",
-  "engines":{
+  "engines": {
     "node": "18.x"
   },
   "scripts": {
