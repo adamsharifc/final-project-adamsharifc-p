@@ -32,7 +32,7 @@ mongoose.model('User', User);
 
 const Comment = new mongoose.Schema({
     id: Number,
-    bugId: Number,
+    bugId: String,
     comment: String,
     addedBy: String,
     timestamp: { type: Date, default: Date.now },
@@ -42,7 +42,7 @@ mongoose.model('Comment', Comment);
 
 const Solution = new mongoose.Schema({
     id: Number,
-    bugId: Number,
+    bugId: String,
     resolvedBy: String,
     resolutionDetail: String,
     status: String,

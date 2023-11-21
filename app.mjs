@@ -161,6 +161,12 @@ app.get('/api/bug', async (req, res) => {
   res.json(bug);
 });
 
+app.get('/api/bugSolutions', async (req, res) => {
+  const bugId = req.query.id;
+  const solutions = await Solution.find({ bugId: bugId });
+  res.json(solutions);
+});
+
 
 // app.get('/', (req, res) => {
 //   console.log("I was called");
