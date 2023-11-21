@@ -155,7 +155,11 @@ app.get('/api/logout', (req, res) => {
   res.json({ message: 'Logout successful' });
 });
 
-
+app.get('/api/bug', async (req, res) => {
+  const bugId = req.query.id;
+  const bug = await BugReport.findById(bugId);
+  res.json(bug);
+});
 
 
 // app.get('/', (req, res) => {
