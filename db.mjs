@@ -14,7 +14,12 @@ const BugReport = new mongoose.Schema({
     timestamp: { type: Date, default: Date.now },
     priority: String,
     tags: [String],
-    comments: [Number],
+    comments: [{
+        id: Number,
+        comment: String,
+        addedBy: String,
+        timestamp: { type: Date, default: Date.now },
+    }],
     resolution: Number,
     description: String,
 });
@@ -22,6 +27,7 @@ const BugReport = new mongoose.Schema({
 mongoose.model('BugReport', BugReport);
 
 const User = new mongoose.Schema({
+    name: String,
     email: String,
     username: String,
     password: String,

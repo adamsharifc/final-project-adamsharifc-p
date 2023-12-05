@@ -30,27 +30,31 @@ app.use(session({ secret: 'your-secret-key', resave: false, saveUninitialized: f
 app.use(passport.initialize());
 app.use(passport.session());
 
-const mockUser = {
-  id: 1,
-  username: 'testuser',
-  password: '$2b$10$UNnTJNr7KQ1E1nLKMXl1kOc/f8.49WQUZR17NKLzrw3qHLpxunNve', // Hashed password
-};
+
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next();
+  } else {
+    res.status(401).json({ message: 'You are not authenticated' });
+  }
+}
 
 // PASSPORT SETUP
 passport.use(new LocalStrategy(
-  (username, password, done) => {
+  async function(username, password, done){
     // Mock user lookup (replace with a database query)
-    if (username === mockUser.username) {
-      bcrypt.compare(password, mockUser.password, (err, res) => {
-        if (res) {
-          return done(null, mockUser);
-        } else {
-          return done(null, false, { message: 'Incorrect password.' });
-        }
-      });
-    } else {
-      return done(null, false, { message: 'Incorrect username.' });
-    }
+    try{
+      const user = await User.findOne({ username: username });
+      if (!user){
+        return done(null, false, { message: "Username doesn't exist." });
+      }
+      if (!await bcrypt.compare(password, user.password)){
+        return done(null, false, { message: 'Incorrect password.' });
+      }
+      return done(null, user);
+    } catch (err) {
+      return done(err);
+    } 
   }
 ));
 
@@ -128,26 +132,42 @@ app.post('/api/newSolution', async (req,res) =>{
   }
 });
 
-// app.post('/api/login', passport.authenticate('local'), async (req, res) => {
-app.post('/api/login', async (req, res) => {
-  console.log('I was called');
-  res.json({ message: 'Login successful', user: req.user });
-});
+  app.post('/api/login', (req, res, next) => {
+    passport.authenticate('local', (err, user, info) => {
+      if (err) {
+        return next(err);
+      }
+      if (!user) {
+        return res.status(400).json({ message: info.message });
+      }
+      req.logIn(user, (err) => {
+        if (err) {
+          return next(err);
+        }
+        return res.json({ message: 'Login successful', user: req.user });
+      });
+    })(req, res, next);
+  });
 
 app.post('/api/signup', async (req, res) => {
-  const {username, email, password} = req.body;
+  const {name, username, email, password} = req.body;
   const hashedPassword = await bcrypt.hash(password, 10);
 
   const newUser = new User({
+    name: name,
     username: username,
     email: email,
     password: hashedPassword,
     lists: []
   });
 
-  await newUser.save();
-
-  res.json({ message: 'Signup successful', user: newUser });
+  try {
+    await newUser.save();
+    res.json({ message: 'Signup successful', user: newUser });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error occurred: database error. SIGNUP FAILED');
+  }
 });
 
 app.get('/api/logout', (req, res) => {
@@ -167,11 +187,48 @@ app.get('/api/bugSolutions', async (req, res) => {
   res.json(solutions);
 });
 
+app.get('/api/isUniqueUsername', async (req, res) => {
+  const username = req.query.username;
+  const user = await User.findOne({ username: username });
+  if (user){
+    res.json({ isUnique: false });
+  } else{
+    res.json({ isUnique: true });
+  }
+});
 
-// app.get('/', (req, res) => {
-//   console.log("I was called");
-//   res.send('Hello world!2');
-// });
-// serve static files
+app.get('/api/isUniqueEmail', async (req, res) => {
+  const email = req.query.email;
+  const user_email = await User.findOne({ email: email });
+  if (user_email){
+    res.json({ isUnique: false });
+  }
+  else{
+    res.json({ isUnique: true });
+  }
+});
+
+app.post('/api/submitComment', async (req, res) => {
+  const { bugId, comment, addedBy } = req.body;
+  try{
+    const bug = await BugReport.findById(bugId);
+    bug.comments.push({
+      comment: comment,
+      addedBy: addedBy,
+    });
+    await bug.save();
+    res.json({ message: 'Comment submitted successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error occurred: database error. SUBMIT COMMENT FAILED');
+  }
+  
+});
+
+app.get('/api/getQuery', async (req, res) => {
+  const query = req.query.query;
+  const bugs = await BugReport.find({ title: query });
+  res.json(bugs);
+});
 
 app.listen(process.env.PORT || 3000);
