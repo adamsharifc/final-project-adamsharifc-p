@@ -42,7 +42,6 @@ function ensureAuthenticated(req, res, next) {
 // PASSPORT SETUP
 passport.use(new LocalStrategy(
   async function(username, password, done){
-    // Mock user lookup (replace with a database query)
     try{
       const user = await User.findOne({ username: username });
       if (!user){
@@ -132,22 +131,22 @@ app.post('/api/newSolution', async (req,res) =>{
   }
 });
 
-  app.post('/api/login', (req, res, next) => {
-    passport.authenticate('local', (err, user, info) => {
+app.post('/api/login', (req, res, next) => {
+  passport.authenticate('local', (err, user, info) => {
+    if (err) {
+      return next(err);
+    }
+    if (!user) {
+      return res.status(401).json({ message: 'Login Failed. Incorrect username and password combination' });
+    }
+    req.logIn(user, (err) => {
       if (err) {
         return next(err);
       }
-      if (!user) {
-        return res.status(400).json({ message: info.message });
-      }
-      req.logIn(user, (err) => {
-        if (err) {
-          return next(err);
-        }
-        return res.json({ message: 'Login successful', user: req.user });
-      });
-    })(req, res, next);
-  });
+      return res.json({ message: 'Login successful', user: req.user });
+    });
+  })(req, res, next);
+});
 
 app.post('/api/signup', async (req, res) => {
   const {name, username, email, password} = req.body;
